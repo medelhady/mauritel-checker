@@ -1,0 +1,64 @@
+:root {
+  --ok: #157f3b; --ok-bg: #e6f6ec;
+  --bad: #b3261e; --bad-bg: #fdecea;
+  --unk: #8a5a00; --unk-bg: #fff4d6;
+  --ink: #1b1f23; --muted: #5d6670; --line: #d8dde3; --bg: #f6f7f9; --brand: #0b5cad;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { display: flex; font-family: "Segoe UI", Tahoma, Arial, sans-serif; color: var(--ink); background: var(--bg); }
+#panel { width: 380px; max-width: 45vw; height: 100%; overflow-y: auto; padding: 14px 16px 40px; background: #fff; border-inline-end: 1px solid var(--line); }
+#map { flex: 1; height: 100%; }
+h1 { font-size: 20px; margin: 0 0 12px; }
+h1 small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); margin-top: 2px; }
+h2 { font-size: 15px; margin: 0 0 6px; }
+section { margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+label { display: block; font-size: 13px; margin-bottom: 4px; color: var(--muted); }
+input[type=text] { flex: 1; min-width: 0; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; }
+.row { display: flex; gap: 6px; align-items: center; }
+.row.wrap { flex-wrap: wrap; margin-top: 8px; }
+button, .filebtn, #gmapsLink { padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; font-size: 13px; cursor: pointer; color: var(--ink); text-decoration: none; display: inline-block; }
+button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+button:disabled { opacity: .55; cursor: wait; }
+.hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; line-height: 1.6; }
+.switch { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--ink); margin: 4px 0; }
+.hidden { display: none !important; }
+
+#searchResults, #zoneList, #lookupResults { list-style: none; margin: 6px 0 0; padding: 0; }
+#addPlace { margin-top: 8px; }
+#addPlace summary { cursor: pointer; font-size: 13px; color: var(--brand); }
+.form { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+#searchResults li, #lookupResults li { padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 4px; font-size: 13px; cursor: pointer; }
+#searchResults li:hover, #lookupResults li:hover { background: var(--bg); }
+
+.result { border-radius: 10px; padding: 12px; border: 2px solid var(--line); }
+.result.inside { border-color: var(--ok); background: var(--ok-bg); }
+.result.outside { border-color: var(--bad); background: var(--bad-bg); }
+.result.unknown { border-color: #e0b64a; background: var(--unk-bg); }
+.badge { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.inside .badge { color: var(--ok); } .outside .badge { color: var(--bad); } .unknown .badge { color: var(--unk); }
+.zonecode { display: inline-block; font-size: 28px; font-weight: 800; letter-spacing: 1px; padding: 2px 14px; margin: 2px 0 6px; border-radius: 8px; background: #fff; border: 2px solid var(--ok); color: var(--ok); }
+.result p { margin: 4px 0 8px; font-size: 16px; line-height: 1.8; font-weight: 600; }
+details#more { margin-top: 6px; }
+details#more summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+.warn { margin-top: 8px; }
+dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 13px; margin: 8px 0; }
+dt { color: var(--muted); } dd { margin: 0; word-break: break-word; }
+.warn { background: #fff; border: 1px dashed var(--unk); border-radius: 6px; padding: 6px 8px; color: var(--unk); }
+
+#zoneList li { display: flex; gap: 6px; align-items: center; padding: 6px; border: 1px solid var(--line); border-radius: 6px; margin-bottom: 4px; font-size: 13px; }
+#zoneList input[type=text] { padding: 4px 6px; font-size: 13px; }
+#zoneList .verified { white-space: nowrap; display: flex; gap: 3px; align-items: center; margin: 0; color: var(--ink); }
+#zoneList button { padding: 3px 8px; }
+
+@media (max-width: 760px) {
+  body { flex-direction: column-reverse; }
+  #panel { width: 100%; max-width: none; height: 52%; }
+  #map { height: 48%; }
+}
+
+/* شاشة الدخول (النسخة المنشورة فقط) */
+#loginOverlay { position: fixed; inset: 0; z-index: 10000; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 16px; }
+#loginForm { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 22px; width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 10px; }
+#loginForm h2 { margin: 0 0 4px; font-size: 18px; }
+#loginForm input { padding: 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; }

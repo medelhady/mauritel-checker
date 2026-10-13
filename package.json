@@ -1,0 +1,10 @@
+{
+  "name": "mauritel-ftth-checker",
+  "version": "1.0.0",
+  "description": "أداة للتحقق من تغطية ألياف موريتل (FTTH) في نواكشوط انطلاقًا من رابط Google Maps",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js"
+  }
+}

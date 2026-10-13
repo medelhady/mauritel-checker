@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تغطية ألياف موريتل</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="loginOverlay" class="hidden">
+    <form id="loginForm">
+      <h2>تسجيل الدخول</h2>
+      <input id="loginEmail" type="email" dir="ltr" placeholder="البريد الإلكتروني" autocomplete="username" required>
+      <input id="loginPass" type="password" dir="ltr" placeholder="كلمة المرور" autocomplete="current-password" required>
+      <button class="primary" type="submit">دخول</button>
+      <p id="loginMsg" class="hint"></p>
+    </form>
+  </div>
+  <aside id="panel">
+    <h1>تغطية ألياف موريتل <small>نواكشوط · FTTH</small></h1>
+    <button id="logoutBtn" class="hidden">تسجيل الخروج</button>
+
+    <section>
+      <label for="linkInput">رابط الموقع من العميل (Google Maps) أو إحداثيات</label>
+      <div class="row">
+        <input id="linkInput" type="text" dir="ltr" placeholder="https://maps.app.goo.gl/...  أو  18.0858, -15.9785" autocomplete="off">
+        <button id="checkBtn" class="primary">تحقق</button>
+      </div>
+      <p class="hint">يمكنك أيضًا النقر على الخريطة مباشرة لاختيار نقطة.</p>
+    </section>
+
+    <section>
+      <label for="searchInput">بحث يدوي عن مكان</label>
+      <div class="row">
+        <input id="searchInput" type="text" placeholder="اسم حي أو شارع أو معلم">
+        <button id="searchBtn">بحث</button>
+      </div>
+      <ul id="searchResults"></ul>
+    </section>
+
+    <section>
+      <label for="lookupInput">استدعاء موقع محفوظ (بالكود أو الحي أو المعلم)</label>
+      <div class="row">
+        <input id="lookupInput" type="text" dir="auto" placeholder="مثال: DN2Z01 أو دار النعيم أو جمبو" autocomplete="off">
+        <button id="lookupBtn">بحث</button>
+      </div>
+      <ul id="lookupResults"></ul>
+      <details id="addPlace">
+        <summary>إضافة موقع جديد (كود + حي + معلم)</summary>
+        <div class="form">
+          <input id="plCode" type="text" dir="ltr" placeholder="كود المنطقة (مثل DN2Z01)" autocomplete="off">
+          <input id="plArea" type="text" placeholder="الحي / المقاطعة (مثل دار النعيم)">
+          <input id="plLandmark" type="text" placeholder="قرب (مثل بوتيك جمبو)">
+          <label class="switch"><input type="checkbox" id="plPrefix"> اعتمد هذا الحي لكل مناطق نفس البادئة (مثل كل DN)</label>
+          <button id="plSave" class="primary">حفظ</button>
+          <p id="plMsg" class="hint"></p>
+        </div>
+      </details>
+    </section>
+
+    <section id="result" class="result unknown hidden" aria-live="polite">
+      <div id="resultBadge" class="badge"></div>
+      <div id="zoneCode" class="zonecode hidden" dir="ltr"></div>
+      <p id="resultText"></p>
+      <p id="savedNote" class="hint hidden"></p>
+      <details id="more">
+      <summary>تفاصيل</summary>
+      <dl>
+        <dt>كود المنطقة</dt><dd id="resZone">—</dd>
+        <dt>الحي (الاسم)</dt><dd id="resArea">—</dd>
+        <dt id="resPlaceDt" class="hidden">اسم المكان في الرابط</dt><dd id="resPlace" class="hidden"></dd>
+        <dt>الإحداثيات</dt><dd id="resCoords" dir="ltr"></dd>
+        <dt>أقرب نقطة بيع</dt><dd id="resPos">—</dd>
+      </dl>
+      <div class="row">
+        <button id="copyBtn">نسخ الإحداثيات</button>
+        <a id="gmapsLink" target="_blank" rel="noopener">فتح في Google Maps</a>
+      </div>
+      </details>
+      <p id="resWarn" class="warn hidden"></p>
+    </section>
+
+    <section>
+      <h2>بيانات التغطية</h2>
+      <p id="dataStatus" class="hint"></p>
+      <div class="row wrap">
+        <label class="switch"><input type="checkbox" id="editToggle"> وضع تحرير الحدود</label>
+        <label class="switch"><input type="checkbox" id="posToggle" checked> نقاط البيع</label>
+        <label class="switch"><input type="checkbox" id="satToggle"> صور الأقمار الصناعية</label>
+      </div>
+
+      <div id="editTools" class="hidden">
+        <p class="hint">ارسم مضلعًا بأداة المضلع على الخريطة (أعلى اليسار)، أو علّم موقع نقطة بيع بأداة الدبوس. يُحفظ كل مضلع جديد كـ «مسودة» ولا يُحتسب تغطية مؤكدة حتى تضع علامة «موثوق».</p>
+        <ul id="zoneList"></ul>
+        <label class="switch"><input type="checkbox" id="completeToggle"> أؤكد أن المضلعات الموثوقة تغطي <b>كل</b> مناطق الألياف (يسمح بالحكم «خارج التغطية»)</label>
+        <div class="row wrap">
+          <button id="saveBtn" class="primary">حفظ التغييرات</button>
+          <button id="exportBtn">تصدير GeoJSON</button>
+          <label class="filebtn">استيراد GeoJSON / KML<input id="importFile" type="file" accept=".geojson,.json,.kml" hidden></label>
+        </div>
+        <p id="saveMsg" class="hint"></p>
+      </div>
+    </section>
+  </aside>
+
+  <main id="map"></main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/parse.js"></script>
+  <script src="js/geo.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

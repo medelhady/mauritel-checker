@@ -1,0 +1,5 @@
+.env
+data/backups/
+data/locations.json
+node_modules/
+data/places.json

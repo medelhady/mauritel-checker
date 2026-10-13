@@ -1,0 +1,6 @@
+data/locations.json
+data/places.json
+data/backups
+data/source
+test
+.env

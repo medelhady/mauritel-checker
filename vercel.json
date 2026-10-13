@@ -1,0 +1,10 @@
+{
+  "framework": null,
+  "outputDirectory": "public",
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "data/{coverage.geojson,pos.geojson}",
+      "maxDuration": 15
+    }
+  }
+}
