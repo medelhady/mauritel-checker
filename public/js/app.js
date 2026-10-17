@@ -164,7 +164,7 @@
   // ---------- نقطة العميل والنتيجة ----------
   function setPoint(lat, lng, source, note, placeName, rawInput) {
     current = { lat: lat, lng: lng, source: source };
-    logPending = rawInput ? { link: rawInput } : null; // نسجّل فقط المواقع المُرسلة كرابط/إحداثيات
+    logPending = (rawInput && MapParse.inMauritania(lat, lng)) ? { link: rawInput } : null; // نسجّل فقط المواقع المُرسلة كرابط/إحداثيات
     $('savedNote').classList.add('hidden');
     var hasPlace = !!placeName;
     $('resPlace').textContent = placeName || '';
@@ -176,14 +176,7 @@
     }).addTo(map);
     map.flyTo([lat, lng], Math.max(map.getZoom(), 17), { duration: 0.6 });
     renderResult(note);
-    scrollToResult();
     reverseGeocode(lat, lng, placeName);
-  }
-
-  // ينقل اللوحة إلى صندوق النتيجة مباشرة بدل أن يمرّر المستخدم بنفسه
-  function scrollToResult() {
-    if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); // إخفاء لوحة المفاتيح على الجوال
-    $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function reclassify() { if (current) renderResult(); }
@@ -398,7 +391,6 @@
     ['resCoords', 'resZone', 'resPos'].forEach(function (id) { $(id).textContent = '—'; });
     $('resArea').textContent = '—';
     $('resWarn').classList.add('hidden');
-    scrollToResult();
   }
 
   function checkInput() {
@@ -637,7 +629,6 @@
       $('resultText').textContent = 'الكود «' + code + '» غير موجود في بيانات موريتل.';
       $('resZone').textContent = '—'; $('resArea').textContent = '—';
       $('resWarn').classList.add('hidden');
-      scrollToResult();
       return;
     }
 
@@ -662,7 +653,6 @@
     var w = $('resWarn');
     w.textContent = 'النتيجة حسب الكود المُدخل فقط، ولم يُتحقق من موقع العميل الدقيق.';
     w.classList.remove('hidden');
-    scrollToResult();
 
     var grp = L.featureGroup(layers);
     map.fitBounds(grp.getBounds(), { maxZoom: 16 });
